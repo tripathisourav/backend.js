@@ -4,10 +4,14 @@
 const express = require('express')
 const noteModel = require('./models/notes.model')
 const cors = require('cors')
+const path = require('path')
 
 const app = express()
+
+// middlewares
 app.use(cors())
 app.use(express.json())
+app.use(express.static('./public')) // public folder ke andar jitni bhi files hai unhe available bna dega
 
 
 
@@ -16,6 +20,11 @@ app.use(express.json())
 // - POST/api/notes
 // - create new note and save data in mongodb
 // - req.body = {title, description}
+
+
+
+// why we just write /api/notes in link of api instead of writting the complete link http://localhost:3000/api/notes
+// Because in Express backend, this route is already running on your server
 
 
 app.post('/api/notes', async (req, res) => {
@@ -79,5 +88,20 @@ app.patch('/api/notes/:id', async (req, res) => {
         message: 'note updated successfully'
     })
 })
+
+
+
+app.use('*name', (req, res) => {
+    // res.send('this is wild card')  // will handle those api's which aren't created
+
+    res.sendFile(path.join(__dirname,'..', "/public/index.html"))
+    // res.sendFile('C:\Users\SOURABH\OneDrive\Desktop\backend.js\day9\Backend\public\index.html')  // not working
+})
+
+// console.log('this is dirname -> ',__dirname)
+// __dirname jis bhi file ke andar use krte hai us folder ka path deta hai jismein file rehti hai
+
+// ab localhost:3000 pe mujhe html ki file mil jayegi or phir woh html ki file css and js ki file ko request lagayengi
+
 
 module.exports = app
