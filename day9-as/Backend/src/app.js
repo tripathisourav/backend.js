@@ -13,7 +13,8 @@ const app = express();
 app.use(express.json())
 app.use(cors())
 app.use(express.static('./public')) // html css js ki files ab publically available hai ab jb localhose:3000 pe index.html file req kregi js and css files ki toh req fulfill ki jayegi
-
+// public folder ke andar jitne bhi resources hai unhe hm directly accsess kr skte hai
+// http://localhost:3000/jpan.avif gives you image present in public folder
 // ab localhost:3000 pe dono frontend or backend chalenga
 
 const noteModel = require('./models/notemodel')
@@ -40,7 +41,7 @@ app.post('/api/notes', async (req, res) => {
 
 
 
-
+    
 // get
 
 
