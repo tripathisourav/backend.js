@@ -1,6 +1,8 @@
 const postModel = require('../models/post.model')
 const ImageKit = require('@imagekit/nodejs')
 const { toFile } = require('@imagekit/nodejs')
+const jwt = require('jsonwebtoken')
+
 
 
 
@@ -28,13 +30,48 @@ async function PostController(req, res) {
     //                         size: 48352  // content in which file is stored in ssd
     // }
 
+    const token = req.cookies.token
+
+    if(!token){
+        return res.status(401).json({
+            message: "Token not provided, Unauthorized access"
+        })
+    }
+
+    let decoded = null;
+    try{
+        decoded = jwt.verify(token, process.env.JWT_SECRET) // agar token doctored hua toh hmara verify method error dega 
+        // json web token error invalid signature (500 internal server error)
+        console.log(decoded);
+
+    } catch(err){
+        return res.status(401).json({
+            message: "user not authorized"
+        })
+    }
+
+    
 
     const file = await imagekit.files.upload({
         file: await toFile(Buffer.from(req.file.buffer), 'file'),
-        fileName: "Test"
+        fileName: "Test",
+        folder:"cohort2-instaClone-posts"
     })
 
-    res.send(file) // imagekit provides thumbnail 
+    const post = await postModel.create({
+        caption: req.body.caption,
+        imgUrl: file.url,
+        user: decoded.id
+    })
+
+
+    res.status(201).json({
+        message: "Post created successfully.",
+        post
+    })
+
+
+    // res.send(file) // imagekit provides thumbnail 
 }
 
 

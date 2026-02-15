@@ -9,6 +9,7 @@ const upload = multer({ storage: multer.memoryStorage() })
 
 // we use cloud storage provider because they cost less in comparision to server
 
+// we compress our images alot to save bandwidth as it costs a lot  
 
 postRouter.post('/', upload.single("krsnaImg") , allPostsController.PostController)
 
