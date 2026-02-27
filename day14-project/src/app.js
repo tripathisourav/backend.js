@@ -6,7 +6,7 @@ const postRouter = require('./routes/post.route')
 const app = express()
 
 // express by default req.body se data nhi padh skta iske liye hme middleware lgta hai
-app.use(express.json())
+app.use(express.json()) // sirf raw data format read kr pata hai
 app.use(cookieParser())
 app.use('/api/auth', authRouter)
 app.use('/api/post', postRouter)  // form-data format for sending files

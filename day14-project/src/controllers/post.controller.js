@@ -30,38 +30,46 @@ async function PostController(req, res) {
     //                         size: 48352  // content in which file is stored in ssd
     // }
 
-    const token = req.cookies.token
 
-    if(!token){
-        return res.status(401).json({
-            message: "Token not provided, Unauthorized access"
-        })
-    }
 
-    let decoded = null;
-    try{
-        decoded = jwt.verify(token, process.env.JWT_SECRET) // agar token doctored hua toh hmara verify method error dega 
-        // json web token error invalid signature (500 internal server error)
-        console.log(decoded);
 
-    } catch(err){
-        return res.status(401).json({
-            message: "user not authorized"
-        })
-    }
 
-    
+    // this block of code is repeating multiple times so we will just create an middleware so that we have to only write it at a place and can use it everywhere
+
+    // {
+    //     const token = req.cookies.token
+
+    //     if (!token) {
+    //         return res.status(401).json({
+    //             message: "Token not provided, Unauthorized access"
+    //         })
+    //     }
+
+    //     let decoded = null;
+    //     try {
+    //         decoded = jwt.verify(token, process.env.JWT_SECRET) // agar token doctored hua toh hmara verify method error dega 
+    //         // json web token error invalid signature (500 internal server error)
+    //         console.log(decoded);
+
+    //     } catch (err) {
+    //         return res.status(401).json({
+    //             message: "user not authorized"
+    //         })
+    //     }
+    // }
+
+
 
     const file = await imagekit.files.upload({
         file: await toFile(Buffer.from(req.file.buffer), 'file'),
         fileName: "Test",
-        folder:"cohort2-instaClone-posts"
+        folder: "cohort2-instaClone-posts"
     })
 
     const post = await postModel.create({
         caption: req.body.caption,
         imgUrl: file.url,
-        user: decoded.id
+        user: req.user.id
     })
 
 
@@ -74,9 +82,61 @@ async function PostController(req, res) {
     // res.send(file) // imagekit provides thumbnail 
 }
 
+// jis user ne login kiya hoga uss user ki saari posts dikhengi
+async function getPostController(req, res) {
 
+
+
+    const userId = req.user.id
+
+    const posts = await postModel.find({
+        user: userId
+    })
+
+    res.status(200).json({
+        message: "Posts fetched successfully.",
+        posts
+    })
+
+}
+
+
+
+async function getPostDetailsController(req, res) {
+
+
+    const userId = req.user.id
+    const postId = req.params.postId;
+
+    const post = await postModel.findById(postId)
+
+    if (!post) {
+        return res.status(404).json({
+            message: "Post not Found."
+        })
+    }
+
+    // 403 Forbidden is used when the server understands the client's request but refuses to authorize it, even if the client is authenticated.
+    if (post.user.toString() !== userId) {
+        return res.status(403).json({
+            user: post.user,
+            userId: userId,
+            message: "forbidden content."
+        })
+    }
+
+
+    return res.status(200).json({
+        message: "post fetched Successfully",
+        post
+    })
+}
 
 
 module.exports = {
-    PostController
+    PostController,
+    getPostController,
+    getPostDetailsController
 }
+
+// day 105 task read about indexing and edge collection
