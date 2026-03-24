@@ -1,4 +1,5 @@
 const postModel = require('../models/post.model')
+const likeModel = require('../models/like.model')
 const ImageKit = require('@imagekit/nodejs')
 const { toFile } = require('@imagekit/nodejs')
 const jwt = require('jsonwebtoken')
@@ -132,11 +133,85 @@ async function getPostDetailsController(req, res) {
     })
 }
 
+async function likePostController(req, res) {
+    const user = req.user.id
+    const postId = req.params.postId    
+    const post = await postModel.findById(postId) // agar postId galat hua toh post null aayega aur agar postId sahi hua toh post me uss post ka data aayega
 
+    if (!post) {
+        return res.status(404).json({
+            message: "Post not Found."
+        })
+    }   
+
+    // if (post.user.toString() === userId) {
+    //     return res.status(400).json({
+    //         message: "You cannot like your own post."
+    //     })
+    // }
+
+    // likeModel -> postId, userId
+    // likeModel me ek unique index create krna hoga jisme postId aur userId dono honge taki ek user ek post ko sirf ek baar hi like kr paye.   
+
+    // likeModel me postId aur userId dono ObjectId type ke honge aur unka reference postModel ke posts collection aur userModel ke instaUsers collection se diya hoga. iska matlab ye hai ki likeModel me jo postId aur userId ka data hoga wo postModel ke posts collection aur userModel ke instaUsers collection ke data se linked hoga. isse hume ye ensure krna hoga ki like create krne se pehle hi ye check kr le ki postId aur userId valid hai ya nahi.
+
+    const isAlreadyLiked = await likeModel.findOne({post: postId, user})
+    // console.log(isAlreadyLiked);
+
+    if(isAlreadyLiked){
+        return res.status(409).json({
+            message: "user already liked this post",
+            like: isAlreadyLiked
+        })
+    }
+
+
+    const like = await likeModel.create({
+        post: postId,
+        user: user
+    })
+
+    res.status(201).json({
+        message: "Post liked successfully.",
+        like
+    })
+}
+
+
+async function unlikePostController(req, res){
+    const postId = req.params.postId
+    const user = req.user.id
+
+    const post = await postModel.findById(postId)
+
+    if(!post){
+        return res.status(409).json({
+            message: "post not Found"
+        })
+    }
+
+    const isPostLiked = await likeModel.findOne({post: postId, user})
+
+    if(!isPostLiked){
+        return res.status(409).json({
+            message: "post can't be unliked as it isn't liked"
+        })
+    }
+
+
+    await likeModel.findOneAndDelete({post: postId, user})
+
+    return res.status(200).json({
+        message: "Successfull unlike request"
+    })
+}
+    
 module.exports = {
     PostController,
     getPostController,
-    getPostDetailsController
+    getPostDetailsController,
+    likePostController,
+    unlikePostController
 }
 
 // day 105 task read about indexing and edge collection

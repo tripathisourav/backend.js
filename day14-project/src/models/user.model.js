@@ -23,18 +23,26 @@ const userSchema = new mongoose.Schema({
     // 274 mil virat kohli's followers
     // 274 mil id's
     // 1 id -> 12bytes => 274 mil 8 12 bytes -> 3.288 GB storage for followers list of virat kohli  
-    followers: [
-        {
-            type: mongoose.Schema.Types.ObjectId,   
-            ref: "instaUsers"
-        }
-    ],
-    following: [
-        {
-            type: mongoose.Schema.Types.ObjectId,   
-            ref: "instaUsers"
-        }
-    ]
+    // followers: [
+    //     {
+    //         type: mongoose.Schema.Types.ObjectId,   
+    //         ref: "instaUsers"
+    //     }
+    // ],
+    // following: [
+    //     {
+    //         type: mongoose.Schema.Types.ObjectId,   
+    //         ref: "instaUsers"
+    //     }
+    // ],
+
+    // likes: [
+    //     {
+    //         type: mongoose.Schema.Types.ObjectId,
+    //         ref: "posts"
+    //     }
+    // ] // takes too much space in database if we have millions of posts and users. so we will create a separate collection for likes and follows to handle the relationships between users and posts. 
+    // we willl create another edge collection for followers and following to handle the relationships between users and followers/following.
 })
 
 

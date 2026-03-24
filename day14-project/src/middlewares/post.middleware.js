@@ -23,9 +23,9 @@ async function identifyUser(req, res, next) {
         })
     }
 
-    req.user = decoded
+    req.user = decoded // kuch bhi likh sakte hai req.avein, req.chillkro
 
-    next() // aange forward krdo req
+    next() // aange forward krdo req ko
 }
 
 module.exports = identifyUser 

@@ -3,7 +3,8 @@ const postRouter = express.Router()
 const allPostsController = require('../controllers/post.controller')
 const multer = require('multer') // multer package read documentation -> it its used because express.json() can't read form-data by default
 const upload = multer({ storage: multer.memoryStorage() }) // temporary storage
-const identifyUser = require('../middlewares/auth.middleware')
+const identifyUser = require('../middlewares/post.middleware')
+const { post } = require('./auth.route')
 
 
 
@@ -15,9 +16,14 @@ const identifyUser = require('../middlewares/auth.middleware')
 
 
 // we use cloud storage provider because they cost less in comparision to server
-// we will use imagekit cloude storage provider provides files to users if they want access
+// we will use imagekit cloud storage provider provides files to users if they want access
 
 // we compress our images alot to save bandwidth as it costs a lot  
+
+
+
+
+
 
 
 /*
@@ -35,6 +41,7 @@ postRouter.post('/', identifyUser, upload.single("krsnaImg") , allPostsControlle
 
 /*
 * GET /api/posts/ [protected]
+* @description - return all posts of the user who is requesting, sorted by createdAt in descending order
 */
 
 
@@ -44,7 +51,7 @@ postRouter.get('/', identifyUser, allPostsController.getPostController)
 
 /*
 * GET /api/posts/details/:postid [protected]
-* - return an detail about specific post with id. also check whether the post belongs to the user that is requesting
+* @description - return an detail about specific post with id. also check whether the post belongs to the user that is requesting
 */
 
 
@@ -54,10 +61,21 @@ postRouter.get('/details/:postId', identifyUser, allPostsController.getPostDetai
 
 
 
+/**
+ * @route POST /api/posts/like/:postId
+ * @description Like a post with the given postId. The user must be authenticated to like a post. If the post is already liked by the user, it will return a message indicating that the post is already liked.
+ * @access Private
+ */
 
+postRouter.post('/like/:postId', identifyUser, allPostsController.likePostController)
 
+/**
+ * @route POST /api/posts/unlike/:postId
+ * @description Unlike a post with the given postId. The user must be authenticated to unlike a post. If the post is not liked by the user, it will return a message indicating that the post is not liked yet.
+ * @access Private
+ */
 
-
+postRouter.post('/unlike/:postId', identifyUser, allPostsController.unlikePostController)
 
 module.exports = postRouter;
 
