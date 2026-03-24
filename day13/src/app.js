@@ -7,7 +7,7 @@ const app = express()
 
 app.use(express.json())  // req.body() se data red krne ke liye
 
-app.use(cookieParser())
+app.use(cookieParser()) // This middleware helps read cookies from incoming requests.
 
 
 // “For any request that starts with /api/auth, send it to authRouter.”
