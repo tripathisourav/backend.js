@@ -3,7 +3,7 @@ import router from './app.routes.jsx'
 // import AppRoutes from './routes'
 // import './style.scss'
 import { AuthProvider } from './features/auth/auth.context.jsx'
-import './features/auth/shared/global.scss'
+import '../src/features/shared/global.scss'
 import { PostContextProvider } from './features/post/post.context.jsx'
 
 const App = () => {
