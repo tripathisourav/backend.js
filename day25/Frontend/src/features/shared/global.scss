@@ -1,0 +1,17 @@
+@use 'button.scss';
+
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html,
+body,
+#root{
+    width: 100%;
+    background-color: #131313;
+
+    color: rgb(106, 102, 102);
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}

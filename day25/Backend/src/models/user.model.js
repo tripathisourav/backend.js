@@ -1,34 +1,36 @@
+// // userSchema.pre('save', function(next){
+// //     if(this.password && this.isModified('password')){
+// //         this.password = this.password.split('').reverse().join('')
+// //     }   
+// //     next();
+// // })
+
+// // userSchema.post('save', function(doc, next){
+// //     console.log('User saved successfully');
+// //     next();
+// // })
+
+
+
 const mongoose = require('mongoose')
 
 const userSchema = new mongoose.Schema({
-    username:{
+    username: {
         type: String,
-        required: [true, 'Username is required'],
-        unique: [true, 'Username already exists']
+        require: [true, 'Username is required'],
+        unique: [true, 'Username must be unique']
     },
-    email:{
+    email: {
         type: String,
-        required: [true, 'Email is required'],
-        unique: [true, 'Email already exists']
+        require: [true, 'Email is required'],
+        unique: [true, 'Email must be unique']
     },
-    password:{
+    password: {
         type: String,
-        required: [true, 'Password is required']
+        require: [true, 'Password is required'],
+        select: false
     }
 })
 
-
-
-// userSchema.pre('save', function(next){
-//     if(this.password && this.isModified('password')){
-//         this.password = this.password.split('').reverse().join('')
-//     }   
-//     next();
-// })
-
-// userSchema.post('save', function(doc, next){
-//     console.log('User saved successfully');
-//     next();
-// })
 
 module.exports = mongoose.model('User', userSchema)
