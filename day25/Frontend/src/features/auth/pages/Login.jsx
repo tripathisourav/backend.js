@@ -21,7 +21,7 @@ const Login = () => {
     e.preventDefault()
 
     const res = await handleLogin(username, password)
-    console.log(res);
+    // console.log(res);
 
     if (res?.user) {
       navigate('/')
