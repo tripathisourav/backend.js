@@ -3,7 +3,7 @@ function handleError(err, req, res, next) {
         message: err.message
     };
 
-    if (process.env.NODE_ENVIRONMENT === "development") {
+    if (process.env.NODE_ENVIRONMENT === "development") {  // if enviornment is development then only throw error stack 
         response.stack = err.stack  // error exactly aaya kha pr hai
     }
 
